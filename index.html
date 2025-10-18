@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Secure Password Generator 2025 | Cryptographically Secure | SafePasswordGenerator.net</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/favicon-32x32.png">
+    <link rel="shortcut icon" href="/assets/favicons/favicon-32x32.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Mobile-first optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e3a8a">
+    
+    <!-- Performance optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    
+    <!-- Preload critical images -->
+    <link rel="preload" href="/assets/logos/logo-colored.svg" as="image" type="image/svg+xml">
+    <meta name="description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private. Used by 50,000+ developers.">
+    
+    <!-- Additional Meta Tags for SEO -->
+    <meta name="keywords" content="password generator, secure password, crypto random, password security, web crypto api, client-side generation, privacy, password manager">
+    <meta name="author" content="SafePasswordGenerator.net">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://safepasswordgenerator.net">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Free Secure Password Generator 2025 | Cryptographically Secure">
+    <meta property="og:description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private.">
+    <meta property="og:url" content="https://safepasswordgenerator.net">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SafePasswordGenerator.net">
+    <meta property="og:image" content="https://safepasswordgenerator.net/og-generator.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Secure Password Generator 2025 | Cryptographically Secure">
+    <meta name="twitter:description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private.">
+    <meta name="twitter:image" content="https://safepasswordgenerator.net/og-generator.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <img src="/assets/logos/logo-colored.svg" alt="SafePasswordGenerator" style="height: 32px; vertical-align: middle;">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="active">Generator</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/privacy">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                    <li>
+                        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                            <span class="theme-icon">🌙</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1>Cryptographically Secure Password Generator</h1>
+                <p>Uses Web Crypto API for client-side generation. Zero data collection, completely private.</p>
+            </section>
+
+            <!-- Password Generator -->
+            <section class="generator-card">
+                <div class="generator-header">
+                    <h2>Generate Your Password</h2>
+                    <p>Customize length and character sets to create the perfect password for your needs</p>
+                </div>
+
+                <div class="generator-options">
+                    <div class="option-group">
+                        <h3>Password Length</h3>
+                        <div class="length-control">
+                            <input type="range" id="length-slider" min="8" max="128" value="16" class="length-slider">
+                            <div class="length-display" id="length-display">16</div>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h3>Character Sets</h3>
+                        <div class="character-options">
+                            <div class="option-item">
+                                <input type="checkbox" id="uppercase" checked>
+                                <label for="uppercase">Uppercase (A-Z)</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="checkbox" id="lowercase" checked>
+                                <label for="lowercase">Lowercase (a-z)</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="checkbox" id="numbers" checked>
+                                <label for="numbers">Numbers (0-9)</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="checkbox" id="symbols" checked>
+                                <label for="symbols">Symbols (!@#$%^&*)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generated-password" id="generated-password">
+                </div>
+
+                <div class="generator-buttons">
+                    <button class="btn btn-primary" id="generate-btn">Generate Password</button>
+                    <button class="btn btn-secondary" id="copy-btn">Copy to Clipboard</button>
+                    <button class="btn btn-outline" id="clear-btn">Clear</button>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <div class="feature-card">
+                    <h3>Cryptographically Secure</h3>
+                    <p>Uses Web Crypto API's crypto.getRandomValues() for true randomness. No pseudo-random number generators.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Client-Side Only</h3>
+                    <p>All password generation happens in your browser. No data is sent to our servers or stored anywhere.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Zero Data Collection</h3>
+                    <p>We don't collect, store, or transmit any information. Your passwords never leave your device.</p>
+                </div>
+            </section>
+
+            <!-- Privacy Section -->
+            <section class="privacy-section">
+                <h2>Your Privacy is Protected</h2>
+                <p>This password generator runs entirely in your browser. No data is collected, stored, or transmitted. Your passwords are generated locally using your device's cryptographic functions.</p>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Developers Trust Us</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Client-Side Security</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Data Collected</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Generator</h3>
+                    <ul>
+                        <li><a href="/">Password Generator</a></li>
+                        <li><a href="/help">How It Works</a></li>
+                        <li><a href="/blog">Security Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="/blog">Security Blog</a></li>
+                        <li><a href="/press">Press Coverage</a></li>
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SafePasswordGenerator.net. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="generator.js"></script>
+</body>
+</html>
