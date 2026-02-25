@@ -1,12 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
+    <!-- requestIdleCallback polyfill for better browser support -->
+    <script>
+      window.requestIdleCallback = window.requestIdleCallback || function(cb, options) {
+        var start = Date.now();
+        return setTimeout(function() {
+          cb({
+            didTimeout: false,
+            timeRemaining: function() {
+              return Math.max(0, 50 - (Date.now() - start));
+            }
+          });
+        }, options && options.timeout ? Math.min(options.timeout, 1) : 1);
+      };
+      window.cancelIdleCallback = window.cancelIdleCallback || function(id) {
+        clearTimeout(id);
+      };
+    </script>
+    <!-- Analytics removed: Google Tag + SPG tracking -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Secure Password Generator 2025 | Cryptographically Secure | SafePasswordGenerator.net</title>
+    <!-- Content Security Policy (cleaned: only needed sources) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline'; connect-src 'self' https://7m2u3jb67d.execute-api.us-east-1.amazonaws.com https://6icf17lelg.execute-api.us-east-1.amazonaws.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <title>Free Password Generator | Secure & Random | SafePasswordGenerator.net</title>
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-touch-icon-180.png">
     <link rel="shortcut icon" href="/assets/favicons/favicon-32x32.png">
     
     <!-- Web App Manifest -->
@@ -22,56 +42,2238 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     
+    <!-- LLMs.txt for AI tools -->
+    <link rel="llms" href="/llms.txt" />
+    
     <!-- Preload critical images -->
     <link rel="preload" href="/assets/logos/logo-colored.svg" as="image" type="image/svg+xml">
-    <meta name="description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private. Used by 50,000+ developers.">
+    <meta name="description" content="Free password generator that runs 100% in your browser. Create strong, random passwords instantly. Open source, zero tracking, no account required. Try it now.">
     
     <!-- Additional Meta Tags for SEO -->
     <meta name="keywords" content="password generator, secure password, crypto random, password security, web crypto api, client-side generation, privacy, password manager">
     <meta name="author" content="SafePasswordGenerator.net">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://safepasswordgenerator.net">
+    <link rel="canonical" href="https://safepasswordgenerator.net/">
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Free Secure Password Generator 2025 | Cryptographically Secure">
-    <meta property="og:description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private.">
-    <meta property="og:url" content="https://safepasswordgenerator.net">
+    <!-- Open Graph Meta Tags (Facebook, LinkedIn) -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://safepasswordgenerator.net/">
+    <meta property="og:title" content="Free Password Generator | Secure & Random | SafePasswordGenerator.net">
+    <meta property="og:description" content="Free password generator that runs 100% in your browser. Create strong, random passwords instantly. Open source, zero tracking, no account required.">
+    <meta property="og:image" content="https://safepasswordgenerator.net/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="SafePasswordGenerator.net">
-    <meta property="og:image" content="https://safepasswordgenerator.net/og-generator.png">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Free Secure Password Generator 2025 | Cryptographically Secure">
-    <meta name="twitter:description" content="Generate cryptographically secure passwords using Web Crypto API. Client-side generation, no data collection, completely private.">
-    <meta name="twitter:image" content="https://safepasswordgenerator.net/og-generator.png">
+    <meta name="twitter:url" content="https://safepasswordgenerator.net/">
+    <meta name="twitter:title" content="Free Password Generator | Secure & Random">
+    <meta name="twitter:description" content="Generate strong passwords in your browser. 100% client-side, open source, zero tracking.">
+    <meta name="twitter:image" content="https://safepasswordgenerator.net/images/og-image.png">
+    
+    <!-- JSON-LD: FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it safe to use an online password generator?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on how the tool works. Our tool generates passwords entirely in your browser using the Web Crypto API. Nothing is transmitted, stored, or logged. The code is open source so you can verify this yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a password generator be hacked?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The passwords a generator creates are secure because they use cryptographically secure randomness (CSPRNG). Because our tool runs client-side only, there is no transmission to intercept. Your password exists only in your browser's memory until you copy it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the strongest 16-character password?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The strongest 16-character password is one generated randomly using all character types: uppercase, lowercase, numbers, and symbols. It has roughly 105 bits of entropy. The specific characters don't matter as much as the randomness. Use our generator with all character types enabled and length set to 16."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does a password generator create random passwords?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our tool uses crypto.getRandomValues(), a CSPRNG built into modern browsers. This function produces randomness suitable for encryption keys and security tokens. The random values are mapped to your selected character sets to build a password."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a different password for every account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Credential stuffing attacks automatically test stolen credentials across thousands of websites. Use a password generator to create unique credentials for each account and store them in a password manager."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between a password and a passphrase?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A password is a random string of characters. A passphrase is a sequence of random words connected by separators. Both are equally secure at sufficient length. Passphrases are easier to type manually, making them ideal for master passwords."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this tool on my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. This password generator works on any modern browser, including Safari on iOS and Chrome on Android. You can also install it as a progressive web app for quick access from your home screen."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often should I change my passwords?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "NIST no longer recommends routine password rotation. Change a password only when you have reason to believe it has been compromised. Focus instead on using unique, strong passwords stored in a password manager and protected by two-factor authentication."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- JSON-LD: WebApplication Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SafePasswordGenerator",
+      "description": "Free password generator that creates strong, random passwords in your browser. 100% client-side, open source, no tracking.",
+      "url": "https://safepasswordgenerator.net",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "SafePasswordGenerator",
+        "url": "https://safepasswordgenerator.net/about"
+      },
+      "browserRequirements": "Requires a modern browser with Web Crypto API support",
+      "softwareVersion": "2.0",
+      "datePublished": "2024-08-01",
+      "dateModified": "2026-02-10"
+    }
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <!-- UI Refresh CSS -->
+    <link rel="stylesheet" href="/css/ui-refresh.css">
+    <!-- Strength Meter CSS -->
+    <link rel="stylesheet" href="/css/strength-meter.css">
+    <!-- Trust Badges CSS -->
+    <link rel="stylesheet" href="/css/trust-badges.css">
+    
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --primary-blue-dark: #1e40af;
+            --primary-blue-light: #3b82f6;
+            --secondary-blue: #1e40af;
+            --secondary-blue-light: #2563eb;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --warm-orange: #ea580c;
+            --warm-orange-light: #f97316;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --text-light: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --bg-warm: #fefefe;
+            --border-gray: #cbd5e1;
+            --border-light: #e2e8f0;
+            --success-green: #10b981;
+            --success-green-light: #34d399;
+            --warning-orange: #f59e0b;
+            --warning-orange-light: #fbbf24;
+            --error-red: #ef4444;
+            --error-red-light: #f87171;
+            --trust-purple: #7c3aed;
+            --trust-purple-light: #a78bfa;
+            --hero-gradient-start: #1e3a8a;
+            --hero-gradient-end: #2563eb;
+            --hero-text-subtle: rgba(255, 255, 255, 0.86);
+        }
+
+        /* Dark mode variables */
+        [data-theme="dark"] {
+            --text-dark: #f1f5f9;
+            --text-gray: #94a3b8;
+            --text-light: #cbd5e1;
+            --bg-white: #1e293b;
+            --bg-light: #0f172a;
+            --bg-warm: #1e293b;
+            --border-gray: #475569;
+            --border-light: #334155;
+            --hero-gradient-start: #0f172a;
+            --hero-gradient-end: #1e3a8a;
+            --hero-text-subtle: rgba(226, 232, 240, 0.88);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 32px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .logo span {
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 0.01em;
+        }
+
+        /* Dark mode logo filter */
+        [data-theme="dark"] .logo img {
+            filter: brightness(0) invert(1);
+        }
+
+        [data-theme="dark"] .logo span {
+            color: var(--text-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links .mobile-divider,
+        .nav-links .mobile-about {
+            display: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-install-btn {
+            background: #00ff88;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-install-btn:hover {
+            background: #00cc6a;
+            color: #000000;
+            transform: translateY(-1px);
+        }
+
+        [data-theme="dark"] .nav-install-btn {
+            background: #00ff88;
+            color: #000000;
+            border: none;
+        }
+
+        [data-theme="dark"] .nav-install-btn:hover {
+            background: #00cc6a;
+            color: #000000;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            position: relative;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--text-dark);
+            padding: 6px 10px;
+            z-index: 1000;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        main {
+            padding: 60px 0;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-banner {
+            background: #1a1f3a;
+            border: 2px solid #2d3748;
+            box-shadow: 4px 8px 0 #0f1419;
+            border-radius: 8px 24px 8px 24px;
+            color: #ffffff;
+            padding: 48px 24px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .hero-banner {
+            background: #0f172a;
+            border-color: #1e293b;
+            box-shadow: 4px 8px 0 #020617;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-banner h1 {
+            color: #ffffff;
+            font-size: clamp(2.1rem, 3vw, 2.6rem);
+            line-height: 1.2;
+        }
+
+        .hero-banner .hero-subtitle {
+            font-size: 1.1rem;
+            margin: 18px auto 0;
+            max-width: 620px;
+            color: var(--hero-text-subtle);
+        }
+
+        .hero-banner .cta-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .cta-button-primary,
+        .cta-button-secondary {
+            padding: 14px 28px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: 2px solid;
+            box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.2);
+            position: relative;
+            font-size: 1rem;
+            letter-spacing: 0.01em;
+        }
+
+        .cta-button-primary {
+            background: #ffffff;
+            color: #1a1f3a;
+            border-color: #ffffff;
+        }
+
+        .cta-button-primary:hover,
+        .cta-button-primary:focus-visible {
+            background: #f8f9fa;
+            color: #1a1f3a;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        [data-theme="dark"] .cta-button-primary {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: #ffffff;
+        }
+
+        [data-theme="dark"] .cta-button-primary:hover,
+        [data-theme="dark"] .cta-button-primary:focus-visible {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .cta-button-primary:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+
+        .cta-button-secondary {
+            background: transparent;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .cta-button-secondary:hover,
+        .cta-button-secondary:focus-visible {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .cta-button-secondary:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+
+        .hero-banner .hero-badge {
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.32);
+            border-radius: 999px;
+            padding: 10px 18px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        .generator-card {
+            background: var(--bg-white);
+            border-radius: 12px 4px 12px 4px;
+            padding: 40px;
+            box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.08);
+            border: 2px solid #e5e7eb;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .generator-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 50%, transparent 100%);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .generator-card:hover::after {
+            opacity: 1;
+        }
+
+        .generator-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .generator-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .generator-header p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        .generator-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .option-group {
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .option-group {
+            background: var(--bg-white);
+            border-color: var(--border-gray);
+        }
+
+        .option-group h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .length-control {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .length-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-light);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .length-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        .length-display {
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .character-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-blue);
+        }
+
+        .option-item label {
+            color: var(--text-dark);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .generated-password {
+            background: #f8f9fa;
+            border: 3px solid #1f2937;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', 'Roboto Mono', 'Courier New', 'Monaco', monospace;
+            font-size: 1.25rem;
+            word-break: break-all;
+            text-align: center;
+            color: #111827;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        /* Color-coded glow based on password strength */
+        .generated-password.strength-weak {
+            box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.05), 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        .generated-password.strength-medium {
+            box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.05), 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+        .generated-password.strength-strong {
+            box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.05), 0 0 20px rgba(34, 197, 94, 0.4);
+        }
+
+        [data-theme="dark"] .generated-password {
+            background: var(--bg-white);
+            border-color: var(--border-gray);
+            color: var(--text-dark);
+        }
+
+        .generated-password.error-state {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        [data-theme="dark"] .generated-password.error-state {
+            color: #fca5a5;
+            background: #7f1d1d;
+            border-color: #b91c1c;
+        }
+
+        .generator-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            border: 2px solid #1e40af;
+            box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            background: #1d4ed8;
+            transform: translate(1px, 1px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #10b981;
+            color: white;
+            border: 2px solid #059669;
+            box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus-visible {
+            background: #059669;
+            transform: translate(1px, 1px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus-visible {
+            background: #eff6ff;
+            color: #1e40af;
+            transform: translate(1px, 1px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .btn-outline:hover,
+        [data-theme="dark"] .btn-outline:focus-visible {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary-blue-light);
+        }
+
+        .btn-outline:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid rgba(59, 130, 246, 0.35);
+            outline-offset: 2px;
+        }
+
+        .toast-banner {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: #28a745;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        
+        /* Toast notification for copy success */
+        .toast-banner.copy-success {
+            background: #28a745;
+            top: 24px;
+        }
+        
+        .toast-banner.copy-success .toast-link {
+            color: #ffffff;
+            text-decoration: underline;
+            margin-left: 8px;
+            opacity: 0.9;
+        }
+        
+        .toast-banner.copy-success .toast-link:hover {
+            opacity: 1;
+        }
+
+        .toast-banner[data-variant="warning"] {
+            background: rgba(217, 119, 6, 0.95);
+        }
+
+        .toast-banner[data-variant="error"] {
+            background: rgba(220, 38, 38, 0.95);
+        }
+
+        .toast-banner.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast-banner.copy-success.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .trust-card {
+            margin-top: 36px;
+            padding: 24px;
+            border-radius: 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .trust-card-icon {
+            font-size: 2rem;
+        }
+
+        .trust-card-content h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+        }
+
+        .trust-card-content p {
+            margin: 6px 0 0;
+            color: var(--text-gray);
+        }
+
+        .trust-card-link {
+            justify-self: flex-start;
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .trust-card-link:hover,
+        .trust-card-link:focus-visible {
+            text-decoration: underline;
+        }
+
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            text-align: center;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+            display: grid;
+            gap: 14px;
+            justify-items: center;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .feature-card a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card a:hover,
+        .feature-card a:focus-visible {
+            color: var(--primary-blue-dark);
+            text-decoration: underline;
+        }
+
+        .privacy-section {
+            background: var(--bg-white);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .privacy-section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .privacy-section p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .newsletter-section {
+            margin-bottom: 60px;
+        }
+
+        .newsletter-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .newsletter-card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .newsletter-card p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 200px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .newsletter-button {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .newsletter-button:hover {
+            background: var(--primary-blue-dark);
+        }
+
+        .newsletter-button:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        #newsletter-message {
+            margin-top: 16px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #newsletter-message.success {
+            background-color: #ecfdf5;
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+
+        #newsletter-message.error {
+            background-color: #fef2f2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .site-footer {
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-light);
+            padding: 60px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--primary-blue-dark);
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .footer-col h4 {
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .footer-col p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-col ul li a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary-blue);
+        }
+
+        .tech-stack {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 12px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-bottom p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        [data-theme="dark"] .footer-col h3 {
+            color: var(--primary-blue-light);
+        }
+
+        [data-theme="dark"] .footer-col h4 {
+            color: var(--text-light);
+        }
+
+        [data-theme="dark"] .footer-col ul li a {
+            color: var(--text-light);
+        }
+
+        [data-theme="dark"] .footer-col ul li a:hover {
+            color: var(--accent-green-light);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: calc(100% + 12px);
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 12px;
+                background: rgba(255, 255, 255, 0.97);
+                padding: 18px 20px;
+                border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+                border: 1px solid rgba(148, 163, 184, 0.2);
+                z-index: 200;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links .mobile-divider {
+                display: block !important;
+                height: 1px;
+                background: var(--border-light);
+                margin: 8px 0;
+                list-style: none;
+            }
+
+            .nav-links .mobile-about {
+                display: block !important;
+            }
+
+            .nav-install-btn {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            [data-theme="dark"] .nav-links {
+                background: rgba(30, 41, 59, 0.97);
+                border-color: rgba(71, 85, 105, 0.3);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0;
+            }
+
+            /* Hero Section - Mobile First: One headline, one giant button */
+            .hero-section h1 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .hero-banner {
+                margin-top: 20px;
+                padding: 30px 18px;
+            }
+
+            .hero-subtitle {
+                display: none; /* Remove explanatory text above button on mobile */
+            }
+
+            .hero-banner .cta-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .cta-button-primary {
+                width: 100%;
+                justify-content: center;
+                min-height: 60px; /* Giant button - 60px height */
+                font-size: 1.125rem;
+                font-weight: 700;
+                padding: 18px 24px;
+            }
+
+            .cta-button-secondary {
+                display: none; /* Hide secondary CTA on mobile */
+            }
+
+            .hero-badge {
+                display: none; /* Hide badge on mobile for cleaner look */
+            }
+
+            /* Generator Card - Mobile Optimized */
+            .generator-header h2 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .generator-header p {
+                display: none; /* Remove explanatory text above button on mobile */
+            }
+
+            .generator-options {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-bottom: 24px;
+            }
+
+            /* Password Display - 18px font, high contrast, full width */
+            .generated-password {
+                font-size: 18px !important;
+                font-weight: 600;
+                padding: 16px;
+                margin-bottom: 16px;
+                background: var(--bg-white);
+                cursor: pointer;
+                user-select: none;
+                border: 2px solid var(--primary-blue);
+                border-radius: 8px;
+                color: var(--text-dark);
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                word-break: break-all;
+                text-align: center;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            /* Generator Buttons - Mobile Layout */
+            .generator-buttons {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 80px; /* Space for sticky copy button */
+            }
+
+            .btn {
+                width: 100%;
+                min-height: 48px;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            #generate-btn {
+                min-height: 60px; /* Giant Generate button - 60px height */
+                font-size: 1.125rem;
+                font-weight: 700;
+            }
+
+            /* Sticky Copy Button - Bright green, impossible to miss */
+            #copy-btn {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                min-height: 54px;
+                padding: 18px;
+                background: #10b981 !important; /* Bright green */
+                color: #ffffff !important;
+                border: none !important;
+                border-radius: 0;
+                font-size: 18px;
+                font-weight: 700;
+                z-index: 1000;
+                box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+                margin: 0;
+                margin-top: 12px;
+            }
+
+            #copy-btn:hover {
+                background: #059669 !important;
+            }
+
+            #copy-btn:active {
+                background: #047857 !important;
+            }
+
+            /* Hide clear button on mobile (not needed with sticky copy) */
+            #clear-btn {
+                display: none;
+            }
+
+            /* Trust Signals - No emoji, clean text */
+            .trust-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 20px;
+                margin-top: 24px;
+            }
+
+            .trust-card-icon {
+                display: none; /* Remove emoji icon */
+            }
+
+            .trust-card-content h3 {
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+
+            .trust-card-content p {
+                font-size: 0.875rem;
+                color: var(--text-light);
+            }
+
+            .trust-card-link {
+                display: none; /* Hide install link on mobile */
+            }
+
+            /* Add trust signals text with emoji */
+            .trust-card::before {
+                content: "🔒 Client-Side Only | No Tracking | Open Source";
+                display: block;
+                font-size: 0.875rem;
+                color: var(--text-light);
+                margin-bottom: 12px;
+                font-weight: 500;
+                text-align: center;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .newsletter-input,
+            .newsletter-button {
+                width: 100%;
+            }
+
+            .toast-banner {
+                left: 16px;
+                right: 16px;
+            }
+        }
+
+        /* Dark mode styles */
+        [data-theme="dark"] body {
+            background: var(--bg-light);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        [data-theme="dark"] .generator-card,
+        [data-theme="dark"] .feature-card,
+        [data-theme="dark"] .privacy-section {
+            background: var(--bg-white);
+            border-color: var(--border-gray);
+        }
+
+        [data-theme="dark"] .length-display {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .toast-banner {
+            background: rgba(30, 58, 138, 0.95);
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .newsletter-input {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border-color: var(--border-gray);
+        }
+
+        [data-theme="dark"] .trust-card {
+            background: var(--bg-white);
+            border-color: var(--border-gray);
+        }
+
+        [data-theme="dark"] .trust-card-link {
+            color: var(--primary-blue-light);
+        }
+
+        [data-theme="dark"] .trust-card-link:hover,
+        [data-theme="dark"] .trust-card-link:focus-visible {
+            color: var(--primary-blue);
+        }
+
+        [data-theme="dark"] .feature-card a {
+            color: var(--primary-blue-light);
+        }
+
+        [data-theme="dark"] .feature-card a:hover,
+        [data-theme="dark"] .feature-card a:focus-visible {
+            color: var(--primary-blue);
+        }
+    
+        .mobile-theme-toggle {
+            display: none;
+        }
+        
+        .tool-card {
+            border: 2px solid var(--border-light);
+            padding: 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+            border-color: var(--primary-blue) !important;
+        }
+        
+        [data-theme="dark"] .tool-card {
+            background: var(--bg-white) !important;
+            border-color: var(--border-gray) !important;
+        }
+        
+        @media (max-width: 768px) {
+            .tools-grid .grid-container {
+                gap: 16px !important;
+            }
+            .tool-card {
+                width: calc(50% - 8px) !important;
+                min-width: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container.has-mobile-theme-toggle {
+                gap: 16px;
+            }
+
+            .nav-container.has-mobile-theme-toggle .mobile-theme-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: none;
+                border: 2px solid var(--primary-blue);
+                color: var(--primary-blue);
+                padding: 8px 12px;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .nav-container.has-mobile-theme-toggle .mobile-theme-toggle:hover {
+                background: var(--primary-blue);
+                color: #ffffff;
+            }
+
+            .nav-container.has-mobile-theme-toggle .nav-links .theme-toggle {
+                display: none;
+            }
+        }
+
+        /* AFFILIATE RECOMMENDATION BOX STYLES */
+        .affiliate-rec-section {
+            margin: 60px 0;
+            padding: 0;
+        }
+        .affiliate-rec-box {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 2px solid #334155;
+            border-radius: 12px 4px 12px 4px;
+            box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.3);
+            padding: 40px 32px;
+            position: relative;
+        }
+        .affiliate-rec-disclosure {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .affiliate-rec-disclosure p {
+            display: inline-block;
+            color: rgba(226, 232, 240, 0.7);
+            font-size: 0.85rem;
+            margin: 0;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+        .affiliate-rec-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .affiliate-rec-header h3 {
+            color: #ffffff;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            line-height: 1.3;
+        }
+        .affiliate-rec-bridge {
+            color: rgba(226, 232, 240, 0.7);
+            font-size: 0.95rem;
+            font-style: italic;
+            margin: 0 0 8px 0;
+        }
+        .affiliate-rec-header p {
+            color: rgba(226, 232, 240, 0.85);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .affiliate-rec-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr;
+            gap: 20px;
+        }
+        .affiliate-rec-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 24px 20px;
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        .affiliate-rec-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translate(1px, 1px);
+            box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+        .affiliate-rec-card--primary {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            border-width: 3px;
+        }
+        .affiliate-rec-card--primary:hover {
+            border-color: #34d399;
+            background: rgba(16, 185, 129, 0.15);
+        }
+        .affiliate-rec-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .affiliate-rec-card-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .affiliate-rec-card-price {
+            font-size: 1.1rem;
+            color: #10b981;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .affiliate-rec-card-desc {
+            font-size: 0.85rem;
+            color: rgba(226, 232, 240, 0.7);
+            margin-bottom: 16px;
+            flex-grow: 1;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .affiliate-rec-card-cta {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .affiliate-rec-card:hover .affiliate-rec-card-cta {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .affiliate-rec-card--primary .affiliate-rec-card-cta {
+            background: #10b981;
+            border-color: #10b981;
+            padding: 14px 20px;
+        }
+        .affiliate-rec-card--primary:hover .affiliate-rec-card-cta {
+            background: #059669;
+        }
+        .affiliate-rec-compare {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .affiliate-rec-compare a {
+            color: rgba(226, 232, 240, 0.6);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .affiliate-rec-compare a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        .affiliate-rec-footer {
+            text-align: center;
+            margin-top: 16px;
+        }
+        .affiliate-rec-footer p {
+            color: rgba(226, 232, 240, 0.4);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            .affiliate-rec-box {
+                padding: 32px 20px;
+            }
+            .affiliate-rec-header h3 {
+                font-size: 1.4rem;
+            }
+            .affiliate-rec-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .affiliate-rec-card--primary {
+                order: -1;
+            }
+        }
+        [data-theme="dark"] .affiliate-rec-box {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            border-color: #1e293b;
+        }
+
+        /* Manager CTA */
+        .memorable-cta-section {
+            max-width: 680px;
+            margin: 48px auto;
+            padding: 0 20px;
+        }
+
+        /* Memorable Password CTA */
+        .memorable-cta {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .memorable-cta h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+
+        .memorable-cta p {
+            margin: 0 0 1rem 0;
+            color: #334155;
+            font-size: 1rem;
+        }
+
+        .memorable-cta-button {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .memorable-cta-button:hover {
+            background: #1d4ed8;
+        }
+
+        [data-theme="dark"] .memorable-cta {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .memorable-cta h3 {
+            color: #7dd3fc;
+        }
+
+        [data-theme="dark"] .memorable-cta p {
+            color: #cbd5e1;
+        }
+
+        .manager-cta {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #86efac;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .manager-cta h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #14532d;
+        }
+
+        .manager-cta > p {
+            margin: 0 0 1rem 0;
+            color: #334155;
+            font-size: 1rem;
+        }
+
+        .manager-options {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .manager-option {
+            display: flex;
+            flex-direction: column;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            transition: all 0.2s ease;
+            min-width: 110px;
+        }
+
+        .manager-option:hover {
+            border-color: #16a34a;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.15);
+        }
+
+        .manager-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .manager-price {
+            color: #16a34a;
+            font-size: 0.85rem;
+        }
+
+        .manager-trust {
+            margin: 1rem 0 0 0;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            .manager-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .manager-option {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        [data-theme="dark"] .manager-cta {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            border-color: #10b981;
+        }
+
+        [data-theme="dark"] .manager-cta h3 {
+            color: #86efac;
+        }
+
+        [data-theme="dark"] .manager-cta > p {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .manager-trust {
+            color: #94a3b8;
+        }
+
+        /* Post-Copy Affiliate CTA */
+        .post-copy-cta {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            text-align: center;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        .post-copy-cta.hidden {
+            display: none;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-copy-success {
+            color: #16a34a;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-copy-prompt p {
+            margin: 0 0 0.75rem 0;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+
+        .post-copy-managers {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .manager-link {
+            display: flex;
+            flex-direction: column;
+            padding: 0.625rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+
+        .manager-link:hover {
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+        }
+
+        .manager-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .manager-price {
+            color: #16a34a;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            .post-copy-managers {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .manager-link {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        [data-theme="dark"] .post-copy-cta {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            border-color: #10b981;
+        }
+
+        [data-theme="dark"] .post-copy-success {
+            color: #86efac;
+        }
+
+        [data-theme="dark"] .post-copy-prompt p {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .manager-link {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .manager-name {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .manager-price {
+            color: #86efac;
+        }
+
+        /* Customize Section - Side by Side */
+        .customize-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .customize-title {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .customize-row {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .customize-length {
+            flex: 0 0 180px;
+        }
+
+        .customize-length label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+
+        .customize-length #length-value {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .customize-length input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+
+        .length-markers {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .customize-charset {
+            flex: 1;
+        }
+
+        .customize-charset > label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+
+        .charset-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .charset-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .charset-btn:hover {
+            border-color: #10b981;
+        }
+
+        .charset-btn.active {
+            background: #10b981;
+            color: #fff;
+            border-color: #10b981;
+        }
+
+        .charset-label {
+            font-weight: 600;
+        }
+
+        .ambiguous-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .ambiguous-check input {
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .customize-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .customize-length {
+                flex: 1;
+                width: 100%;
+            }
+            
+            .charset-options {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        [data-theme="dark"] .customize-section {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .customize-title {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .customize-length label {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .customize-charset > label {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .charset-btn {
+            background: #0f172a;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .charset-btn.active {
+            background: #10b981;
+            color: #fff;
+            border-color: #10b981;
+        }
+
+        [data-theme="dark"] .ambiguous-check {
+            color: #94a3b8;
+        }
+
+        /* SEO educational content sections */
+        .seo-content {
+            max-width: 800px;
+            margin: 3rem auto;
+            contain: layout style;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #111827;
+            text-align: left;
+        }
+
+        .seo-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .seo-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .seo-content p {
+            margin-bottom: 1rem;
+        }
+
+        .seo-content ol {
+            padding-left: 1.5rem;
+        }
+
+        .seo-content ol li {
+            margin-bottom: 0.75rem;
+        }
+
+        /* FAQ accordion mobile-friendly touch targets */
+        .seo-content details {
+            margin-bottom: 0.5rem;
+        }
+
+        .seo-content details summary {
+            padding: 1rem 0;
+            cursor: pointer;
+            min-height: 48px; /* Google's minimum touch target size */
+            list-style: none;
+        }
+
+        .seo-content details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .seo-content details summary h3 {
+            margin: 0;
+            display: inline;
+        }
+
+        .seo-content details p {
+            padding: 0 0 1rem 0;
+        }
+
+        /* Author / trust box */
+        .author-box {
+            background: var(--bg-secondary, #f8f9fa);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem auto;
+            border-left: 4px solid var(--accent-color, #2563eb);
+            max-width: 800px;
+        }
+
+        .author-box .author-info p:last-child {
+            margin-bottom: 0;
+        }
+
+    </style>
 </head>
 <body>
+    <div id="toast-banner" class="toast-banner" role="status" aria-live="polite">
+        <span id="toast-text">Action completed.</span>
+    </div>
     <nav>
         <div class="container">
             <div class="nav-container">
                 <a href="/" class="logo">
-                    <img src="/assets/logos/logo-colored.svg" alt="SafePasswordGenerator" style="height: 32px; vertical-align: middle;">
+                    <img src="/assets/logos/logo-colored.svg" alt="" height="32" width="32">
+                    <span>SafePasswordGenerator</span>
                 </a>
-                <ul class="nav-links">
-                    <li><a href="/" class="active">Generator</a></li>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+                <ul class="nav-links" id="nav-links">
                     <li><a href="/blog">Blog</a></li>
-                    <li><a href="/help">Help</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a href="/privacy">Privacy</a></li>
-                    <li><a href="/terms">Terms</a></li>
-                    <li>
-                        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                            <span class="theme-icon">🌙</span>
-                        </button>
-                    </li>
+                    <li><a href="/password-game">Password Game</a></li>
+                    <li><a href="/password-checker">Password Checker</a></li>
+                    <li><a href="/security-score">Security Score</a></li>
+                    <li><a href="/vpn">VPN</a></li>
+                    <li class="nav-cta-item"><a href="/install" class="nav-install-btn">Generate anywhere →</a></li>
+                    <li><button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"><span class="theme-icon">🌙</span></button></li>
                 </ul>
             </div>
         </div>
@@ -79,135 +2281,1478 @@
 
     <main>
         <div class="container">
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <h1>Cryptographically Secure Password Generator</h1>
-                <p>Uses Web Crypto API for client-side generation. Zero data collection, completely private.</p>
+            <!-- Trust Badges Section -->
+            <section class="spg-trust-section">
+                <div class="spg-trust-grid">
+                    <!-- Badge 1: Client-Side -->
+                    <div class="spg-trust-badge">
+                        <div class="spg-badge-icon">🛡️</div>
+                        <div class="spg-badge-content">
+                            <h3 class="spg-badge-title">100% Client-Side</h3>
+                            <p class="spg-badge-description">Generated in your browser. Never sent to our servers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Badge 2: Open Source -->
+                    <div class="spg-trust-badge">
+                        <div class="spg-badge-icon">{ }</div>
+                        <div class="spg-badge-content">
+                            <h3 class="spg-badge-title">Open Source</h3>
+                            <p class="spg-badge-description">Review our code. Audited by security researchers.</p>
+                            <a href="https://github.com/SafePassGenerator/safepasswordgen" target="_blank" rel="noopener" class="spg-badge-link">View Source</a>
+                        </div>
+                    </div>
+
+                    <!-- Badge 3: Built by Expert -->
+                    <div class="spg-trust-badge">
+                        <div class="spg-badge-icon">👤</div>
+                        <div class="spg-badge-content">
+                            <h3 class="spg-badge-title">Built by a Team of Security Experts</h3>
+                            <p class="spg-badge-description">Password security explained in plain English.</p>
+                            <a href="/about" class="spg-badge-link">About the Developer</a>
+                        </div>
+                    </div>
+
+                    <!-- Badge 4: Research-Backed -->
+                    <div class="spg-trust-badge">
+                        <div class="spg-badge-icon">📚</div>
+                        <div class="spg-badge-content">
+                            <h3 class="spg-badge-title">Research-Backed</h3>
+                            <p class="spg-badge-description">Analyzed 50,000+ breached passwords to inform our algorithm.</p>
+                            <a href="/blog/password-analysis-50000-breached" class="spg-badge-link">Read the Research</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Banner -->
+                <div class="spg-privacy-banner">
+                    <div class="spg-privacy-content">
+                        <div class="spg-privacy-icon">🔒</div>
+                        <p class="spg-privacy-text">
+                            <strong>Privacy Guarantee:</strong> We don't track you. We don't store passwords. We don't collect analytics. This tool runs entirely in your browser with zero data transmission.
+                        </p>
+                    </div>
+                    <a href="/privacy-policy" class="spg-privacy-button">Privacy Policy</a>
+                </div>
             </section>
 
             <!-- Password Generator -->
-            <section class="generator-card">
+            <section class="generator-card" id="generator">
                 <div class="generator-header">
-                    <h2>Generate Your Password</h2>
-                    <p>Customize length and character sets to create the perfect password for your needs</p>
+                    <h1>Free Password Generator: Create Strong, Secure Passwords Instantly</h1>
+                    <p class="generator-tagline">Strong passwords made simple. No tracking. No nonsense.</p>
+                    <p class="trust-signal">
+                        <a href="https://github.com/SafePassGenerator/safepasswordgen" target="_blank" rel="noopener" class="trust-link">🔒 Client-Side Generated. View Source on GitHub →</a>
+                    </p>
                 </div>
 
-                <div class="generator-options">
-                    <div class="option-group">
-                        <h3>Password Length</h3>
-                        <div class="length-control">
-                            <input type="range" id="length-slider" min="8" max="128" value="16" class="length-slider">
-                            <div class="length-display" id="length-display">16</div>
+                <div class="password-display-wrapper">
+                    <div class="password-display" id="generated-password" role="button" tabindex="0" aria-live="polite"></div>
+                    <div class="password-actions">
+                        <button class="btn-icon" id="copy-btn" aria-label="Copy password" title="Copy to clipboard">
+                            <span class="icon-copy">📋</span>
+                        </button>
+                        <button class="btn-icon" id="generate-btn" aria-label="Generate new password" title="Generate new password">
+                            <span class="icon-refresh">🔄</span>
+                        </button>
+                    </div>
+                    <div class="password-hint" id="password-hint">Click password to copy</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="generate-btn-large">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+                        Generate New
+                    </button>
+                    <button class="btn-primary" id="copy-btn-large">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Copy Password
+                    </button>
+                </div>
+
+                <!-- Post-Copy Affiliate CTA (hidden by default) -->
+                <div id="post-copy-cta" class="post-copy-cta hidden">
+                    <div class="post-copy-success">✓ Copied!</div>
+                    <div class="post-copy-prompt">
+                        <p>Don't lose it. Save to a password manager:</p>
+                        <div class="post-copy-managers">
+                            <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005&source=post-copy" target="_blank" rel="sponsored noopener nofollow" class="manager-link nordpass">
+                                <span class="manager-name">NordPass</span>
+                                <span class="manager-price">$1.99/mo</span>
+                            </a>
+                            <a href="https://go.getproton.me/aff_c?offer_id=38&aff_id=15203&source=post-copy" target="_blank" rel="sponsored noopener nofollow" class="manager-link proton">
+                                <span class="manager-name">Proton Pass</span>
+                                <span class="manager-price">Free</span>
+                            </a>
+                            <a href="https://www.roboform.com/lp?frm=rfp-010&affid=safpg&source=post-copy" target="_blank" rel="sponsored noopener nofollow" class="manager-link roboform">
+                                <span class="manager-name">RoboForm</span>
+                                <span class="manager-price">$24/yr</span>
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="option-group">
-                        <h3>Character Sets</h3>
-                        <div class="character-options">
-                            <div class="option-item">
-                                <input type="checkbox" id="uppercase" checked>
-                                <label for="uppercase">Uppercase (A-Z)</label>
+                <div class="customize-section">
+                    <h4 class="customize-title">Customize</h4>
+                    <div class="customize-row">
+                        <div class="customize-length">
+                            <label>Length: <span id="length-value">16</span></label>
+                            <input type="range" min="12" max="64" value="16" id="length-slider">
+                            <div class="length-markers">
+                                <span>12</span>
+                                <span>32</span>
+                                <span>64</span>
                             </div>
-                            <div class="option-item">
-                                <input type="checkbox" id="lowercase" checked>
-                                <label for="lowercase">Lowercase (a-z)</label>
+                        </div>
+                        <div class="customize-charset">
+                            <label>Character Sets</label>
+                            <div class="charset-options">
+                                <button class="charset-btn active" data-charset="uppercase" id="uppercase">
+                                    <span class="charset-label">ABC</span> Uppercase
+                                </button>
+                                <button class="charset-btn active" data-charset="lowercase" id="lowercase">
+                                    <span class="charset-label">abc</span> Lowercase
+                                </button>
+                                <button class="charset-btn active" data-charset="numbers" id="numbers">
+                                    <span class="charset-label">123</span> Numbers
+                                </button>
+                                <button class="charset-btn active" data-charset="symbols" id="symbols">
+                                    <span class="charset-label">!@#</span> Symbols
+                                </button>
                             </div>
-                            <div class="option-item">
-                                <input type="checkbox" id="numbers" checked>
-                                <label for="numbers">Numbers (0-9)</label>
-                            </div>
-                            <div class="option-item">
-                                <input type="checkbox" id="symbols" checked>
-                                <label for="symbols">Symbols (!@#$%^&*)</label>
-                            </div>
+                            <label class="ambiguous-check">
+                                <input type="checkbox" checked id="avoid-ambiguous"> 
+                                Avoid ambiguous characters (O, 0, l, I, 1)
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="generated-password" id="generated-password">
-                </div>
+                <!-- Strength Meter Container -->
+                <div id="strengthMeterContainer"></div>
 
-                <div class="generator-buttons">
-                    <button class="btn btn-primary" id="generate-btn">Generate Password</button>
-                    <button class="btn btn-secondary" id="copy-btn">Copy to Clipboard</button>
-                    <button class="btn btn-outline" id="clear-btn">Clear</button>
+                <!-- Memorable Password CTA -->
+                <div class="memorable-cta">
+                    <div class="memorable-cta-content">
+                        <h3>Hard to remember?</h3>
+                        <p>Generate a passphrase instead. Just as secure. Actually memorable.</p>
+                        <a href="/memorable-password-generator" class="memorable-cta-button">
+                            Generate Memorable Password →
+                        </a>
+                    </div>
                 </div>
             </section>
 
-            <!-- Features Section -->
-            <section class="features-section">
-                <div class="feature-card">
-                    <h3>Cryptographically Secure</h3>
-                    <p>Uses Web Crypto API's crypto.getRandomValues() for true randomness. No pseudo-random number generators.</p>
+            <!-- Manager CTA -->
+            <section class="memorable-cta-section">
+                <div class="manager-cta">
+                    <h3>Pro tip: Remember one password, not fifty.</h3>
+                    <p>Use this passphrase as your master password. Let a manager handle the rest.</p>
+                    <div class="manager-options">
+                        <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005&source=memorable" target="_blank" rel="sponsored noopener nofollow" class="manager-option">
+                            <span class="manager-name">NordPass</span>
+                            <span class="manager-price">$1.99/mo</span>
+                        </a>
+                        <a href="https://go.getproton.me/aff_c?offer_id=38&aff_id=15203&source=memorable" target="_blank" rel="sponsored noopener nofollow" class="manager-option">
+                            <span class="manager-name">Proton Pass</span>
+                            <span class="manager-price">Free</span>
+                        </a>
+                        <a href="https://www.roboform.com/lp?frm=rfp-010&affid=safpg&source=memorable" target="_blank" rel="sponsored noopener nofollow" class="manager-option">
+                            <span class="manager-name">RoboForm</span>
+                            <span class="manager-price">Free</span>
+                        </a>
+                    </div>
+                    <p class="manager-trust">Trusted by millions for secure password storage.</p>
                 </div>
-                <div class="feature-card">
-                    <h3>Client-Side Only</h3>
-                    <p>All password generation happens in your browser. No data is sent to our servers or stored anywhere.</p>
+            </section>
+
+            <!-- Security Score CTA -->
+            <section class="security-score-cta" style="max-width: 680px; margin: 48px auto; padding: 0 20px;">
+                <div style="text-align: center; padding: 40px 32px; background: var(--bg-white, #ffffff); border-radius: 12px 4px 12px 4px; box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.08); border: 2px solid #e5e7eb;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark, #0f172a); margin-bottom: 12px;">One strong password won't save you.</h2>
+                    <p style="color: var(--text-gray, #64748b); margin-bottom: 24px; font-size: 1rem; line-height: 1.6;">Most people have 100+ accounts. Find out if your overall security habits are putting you at risk.</p>
+                    <a href="/security-score" style="display: inline-block; padding: 16px 32px; background: #2563eb; color: white; border: 2px solid #1e40af; border-radius: 10px; font-size: 1rem; font-weight: 600; text-decoration: none; box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.15); transition: all 0.2s ease;">Take the 2-Minute Security Quiz</a>
+                    <p style="font-size: 0.875rem; color: var(--text-light, #94a3b8); margin-top: 16px;">Free. No account required.</p>
                 </div>
-                <div class="feature-card">
-                    <h3>Zero Data Collection</h3>
-                    <p>We don't collect, store, or transmit any information. Your passwords never leave your device.</p>
+            </section>
+            <!-- End Security Score CTA -->
+
+            <!-- AFFILIATE RECOMMENDATION BOX - Moved further down -->
+            <section class="affiliate-rec-section">
+                <div class="affiliate-rec-box">
+                    <div class="affiliate-rec-disclosure">
+                        <p>We keep this site free through affiliate partnerships. Here's who we trust.</p>
+                    </div>
+                    <div class="affiliate-rec-header">
+                        <h3>You'll forget this password in 3 days. Then what?</h3>
+                        <p class="affiliate-rec-bridge">We generate the passwords. They store them securely.</p>
+                        <p>The average person has 100+ accounts. A password manager remembers them all.</p>
+                    </div>
+                    <div class="affiliate-rec-grid">
+                        <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005&source=homepage" 
+                           class="affiliate-rec-card affiliate-rec-card--primary" 
+                           rel="sponsored nofollow noopener" 
+                           target="_blank"
+                           data-track="affiliate-nordpass-homepage">
+                            <span class="affiliate-rec-badge">Our Pick</span>
+                            <div class="affiliate-rec-card-name">NordPass</div>
+                            <div class="affiliate-rec-card-price">$1.99/month</div>
+                            <div class="affiliate-rec-card-desc">Built-in breach scanner. Zero-knowledge encryption. From the makers of NordVPN.</div>
+                            <div class="affiliate-rec-card-cta">Store This Password Forever</div>
+                        </a>
+                        <a href="https://go.getproton.me/aff_c?offer_id=38&aff_id=15203&source=homepage" 
+                           class="affiliate-rec-card" 
+                           rel="sponsored nofollow noopener" 
+                           target="_blank"
+                           data-track="affiliate-protonpass-homepage">
+                            <div class="affiliate-rec-card-name">Proton Pass</div>
+                            <div class="affiliate-rec-card-price">Free tier available</div>
+                            <div class="affiliate-rec-card-desc">Swiss privacy. Open source. Audited.</div>
+                            <div class="affiliate-rec-card-cta">Try Free</div>
+                        </a>
+                        <a href="https://www.roboform.com/lp?frm=rfp-010&affid=safpg&source=homepage" 
+                           class="affiliate-rec-card" 
+                           rel="sponsored nofollow noopener" 
+                           target="_blank"
+                           data-track="affiliate-roboform-homepage">
+                            <div class="affiliate-rec-card-name">RoboForm</div>
+                            <div class="affiliate-rec-card-price">$24/year</div>
+                            <div class="affiliate-rec-card-desc">25 years trusted. Simple and reliable.</div>
+                            <div class="affiliate-rec-card-cta">Try RoboForm</div>
+                        </a>
+                    </div>
+                    <div class="affiliate-rec-compare">
+                        <a href="/blog/best-password-managers-2025">See full comparison of all password managers</a>
+                    </div>
+                    <div class="affiliate-rec-footer">
+                        <p>We may earn a commission at no extra cost to you.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEO Educational Content -->
+            <section class="seo-content" id="why-password-generator">
+                <h2>Why Use a Secure Password Generator?</h2>
+                <p>
+                    After analyzing over 50,000 breached passwords, we found that 72% followed 
+                    predictable patterns: a capitalized word, a number, and a symbol tacked on 
+                    at the end. Hackers know these patterns. A password like "Summer2026!" looks 
+                    strong on paper but falls to pattern-based attacks in minutes.
+                </p>
+                <p>
+                    A password generator eliminates human bias entirely. Every character is chosen 
+                    independently with equal probability, producing passwords with maximum entropy 
+                    per character. A 16-character password from our generator contains roughly 105 
+                    bits of entropy, which would take billions of years to crack with current 
+                    technology.
+                </p>
+                <p>
+                    The National Institute of Standards and Technology (NIST) now recommends 
+                    passwords of at least 15 characters. The Cybersecurity and Infrastructure 
+                    Security Agency (CISA) goes further, suggesting 16 or more. Our password 
+                    generator defaults to 16 and supports lengths up to 64, giving you 
+                    flexibility to meet any security requirement.
+                </p>
+                <p>
+                    Want to go deeper? Read our analysis of 
+                    <a href="/blog/password-analysis-50000-breached">50,000 breached passwords</a> 
+                    to understand exactly what patterns hackers exploit, or check out our 
+                    <a href="/blog/how-to-create-strong-password-2025">complete guide to creating 
+                    strong passwords</a>.
+                </p>
+            </section>
+
+            <section class="seo-content" id="how-it-works">
+                <h2>How This Tool Generates Truly Random Passwords</h2>
+                <p>
+                    When you click "Generate," our tool calls your browser's 
+                    <code>crypto.getRandomValues()</code> function, a cryptographically secure 
+                    pseudorandom number generator (CSPRNG) built into every modern browser. 
+                    This is the same Web Crypto API that secures online banking, encrypted 
+                    messaging, and TLS certificates.
+                </p>
+                <p>
+                    The random values are mapped to your selected character sets (uppercase, 
+                    lowercase, numbers, symbols) to build a password that meets your exact 
+                    requirements. No API calls. No server round-trips. No database writes. 
+                    Everything happens locally in your browser tab.
+                </p>
+                <p>
+                    This client-side approach is fundamentally different from most online 
+                    password generators, which generate passwords on their servers and send 
+                    them back to you over the internet. With our tool, your password never 
+                    leaves your device. You can verify this by 
+                    <a href="https://github.com/SafePassGenerator/safepasswordgen">reviewing 
+                    our open source code on GitHub</a> or by opening your browser's Network 
+                    tab and confirming zero outbound requests during generation.
+                </p>
+                <p>
+                    For WiFi networks, we also offer a dedicated tool to 
+                    <a href="/wifi-password-generator">generate secure WPA2 keys</a> 
+                    and even create a <a href="/wifi-qr-code-generator">scannable QR code</a> 
+                    so guests can connect without typing.
+                </p>
+            </section>
+
+            <section class="seo-content" id="best-practices">
+                <h2>Password Security Best Practices for 2026</h2>
+                
+                <h3>Generate a unique password for every account</h3>
+                <p>
+                    Credential stuffing attacks test stolen username/password pairs across 
+                    thousands of sites automatically. If you reuse a password and one service 
+                    is breached, every account sharing that password is compromised. Use a 
+                    password generator to create a different credential for each account, then 
+                    store them in a manager like 
+                    <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005&source=best-practices">NordPass</a>, 
+                    <a href="https://go.getproton.me/aff_c?offer_id=38&aff_id=15203&source=best-practices">Proton Pass</a>, 
+                    or <a href="https://www.roboform.com/lp?frm=rfp-010&affid=safpg&source=best-practices">RoboForm</a>.
+                </p>
+
+                <h3>Set password length to 16 characters or more</h3>
+                <p>
+                    Length matters more than complexity. A 12-character password using only 
+                    numbers can be cracked in 25 seconds. The same length with mixed character 
+                    types takes an estimated 34,000 years. At 16 characters with full complexity, 
+                    crack time extends to billions of years. Our tool defaults to 16 characters 
+                    because this is the current security sweet spot.
+                </p>
+
+                <h3>Enable all character types</h3>
+                <p>
+                    Toggle on uppercase, lowercase, numbers, and symbols. This expands the 
+                    character pool from 26 (lowercase only) to 95 (all printable ASCII), 
+                    dramatically increasing entropy per character. More entropy means 
+                    exponentially more combinations for attackers to try.
+                </p>
+
+                <h3>Never modify what the generator produces</h3>
+                <p>
+                    Resist the urge to "tweak" a generated password. Capitalizing the first 
+                    letter, moving the symbol to the end, or swapping in a memorable number 
+                    reintroduces the exact human patterns that make passwords predictable. 
+                    Trust the randomness.
+                </p>
+
+                <h3>Pair strong passwords with two-factor authentication</h3>
+                <p>
+                    A strong password is your first line of defense. Two-factor authentication 
+                    (2FA) is your second. Even if a credential is somehow compromised, 2FA 
+                    blocks unauthorized access. Use an authenticator app (not SMS) for the 
+                    strongest protection.
+                </p>
+
+                <p>
+                    Need a specific length? Try our 
+                    <a href="/16-character-password-generator">16-character password generator</a> 
+                    for maximum security, or create a 
+                    <a href="/memorable-password-generator">memorable passphrase</a> 
+                    that's just as strong but easier to type.
+                </p>
+            </section>
+
+            <section class="seo-content" id="how-to-use">
+                <h2>How to Create a Strong Password in 4 Steps</h2>
+                <ol>
+                    <li>
+                        <strong>Choose your password length.</strong> Use the slider to set 
+                        your desired length. We recommend 16 characters minimum for most 
+                        accounts, 20+ for banking and email.
+                    </li>
+                    <li>
+                        <strong>Select your character types.</strong> Toggle uppercase letters, 
+                        lowercase letters, numbers, and symbols. Enable all four for maximum 
+                        security.
+                    </li>
+                    <li>
+                        <strong>Click "Generate."</strong> Your new password is created 
+                        instantly in your browser using cryptographic randomness. Nothing is 
+                        sent to any server.
+                    </li>
+                    <li>
+                        <strong>Copy and save to a password manager.</strong> Click the copy 
+                        button, then store it in a trusted password manager so you never need 
+                        to remember it.
+                    </li>
+                </ol>
+                <p>
+                    Already have a password? Test its strength with our 
+                    <a href="/password-checker">password strength checker</a>, 
+                    or take the <a href="/security-score">2-minute security quiz</a> 
+                    to evaluate your overall password hygiene.
+                </p>
+            </section>
+
+            <section class="seo-content" id="faq">
+                <h2>Frequently Asked Questions About Password Generators</h2>
+
+                <details>
+                    <summary><h3>Is it safe to use an online password generator?</h3></summary>
+                    <p>
+                        It depends on how the tool works. Most online password generators create 
+                        passwords on their servers, which means your password travels over the 
+                        internet. Our tool is different: it generates passwords entirely in your 
+                        browser using the Web Crypto API. Nothing is transmitted, stored, or 
+                        logged. The code is open source so you can verify this yourself.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>Can a password generator be hacked?</h3></summary>
+                    <p>
+                        A password generator itself is just a tool. The passwords it creates 
+                        are secure because they use cryptographically secure randomness (CSPRNG). 
+                        The risk with some generators is that they transmit your password over 
+                        the internet, where it could be intercepted. Because our tool runs 
+                        client-side only, there is no transmission to intercept. Your password 
+                        exists only in your browser's memory until you copy it.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>What is the strongest 16-character password?</h3></summary>
+                    <p>
+                        The "strongest" 16-character password is one generated randomly using 
+                        all character types: uppercase, lowercase, numbers, and symbols. 
+                        Something like <code>k9$MpQ2#vL7n!xBw</code> has roughly 105 bits of 
+                        entropy. But the specific characters don't matter as much as the 
+                        randomness. Two equally random 16-character passwords are equally 
+                        strong, regardless of which specific characters appear. Use our 
+                        generator with all character types enabled and length set to 16 to 
+                        create one instantly.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>How does a password generator create random passwords?</h3></summary>
+                    <p>
+                        Our tool uses <code>crypto.getRandomValues()</code>, a CSPRNG built 
+                        into modern browsers. This function produces randomness suitable for 
+                        encryption keys and security tokens. The random values are mapped to 
+                        your selected character sets to build a password. Unlike 
+                        <code>Math.random()</code> (which is predictable and should never be 
+                        used for security), the Web Crypto API draws from your operating 
+                        system's entropy pool.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>Do I need a different password for every account?</h3></summary>
+                    <p>
+                        Yes. Credential stuffing attacks automatically test stolen credentials 
+                        across thousands of websites. If you reuse a password and one service 
+                        is breached, every account sharing that password is at risk. Use a 
+                        password generator to create unique credentials for each account and 
+                        store them in a 
+                        <a href="/blog/best-password-managers-2025">password manager</a>.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>What is the difference between a password and a passphrase?</h3></summary>
+                    <p>
+                        A password is a random string of characters 
+                        (like <code>k9$MpQ2#vL7n</code>). A passphrase is a sequence of random 
+                        words connected by separators (like <code>correct-horse-battery-staple</code>). 
+                        Both are equally secure at sufficient length. Passphrases are easier to 
+                        type manually, which makes them ideal for master passwords. We offer a 
+                        dedicated <a href="/memorable-password-generator">memorable passphrase 
+                        generator</a> for this purpose.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>Can I use this tool on my phone?</h3></summary>
+                    <p>
+                        Yes. This password generator works on any modern browser, including 
+                        Safari on iOS and Chrome on Android. You can also 
+                        <a href="/install">install it as a progressive web app</a> for quick 
+                        access from your home screen without downloading anything from an 
+                        app store.
+                    </p>
+                </details>
+
+                <details>
+                    <summary><h3>How often should I change my passwords?</h3></summary>
+                    <p>
+                        NIST no longer recommends routine password rotation. Change a password 
+                        only when you have reason to believe it's been compromised (a data 
+                        breach notification, suspicious account activity, or if you shared it 
+                        with someone). Focus instead on using unique, strong passwords generated 
+                        by a tool like this one, stored in a password manager, and protected by 
+                        two-factor authentication.
+                    </p>
+                </details>
+            </section>
+
+            <section class="author-box" id="about-author">
+                <h2>Built by Security Engineers, Not Marketers</h2>
+                <div class="author-card">
+                    <div class="author-info">
+                        <p>
+                            SafePasswordGenerator was built by a team led by T.O. Mercer, a 
+                            DevSecOps engineer with over 10 years of experience securing systems 
+                            at Fortune 500 companies. After analyzing 50,000+ breached passwords, 
+                            we built the tool we wished existed: a password generator that is 
+                            truly private, completely transparent, and backed by real security 
+                            research.
+                        </p>
+                        <p>
+                            Our code is <a href="https://github.com/SafePassGenerator/safepasswordgen">open 
+                            source on GitHub</a>. Our 
+                            <a href="/blog/password-analysis-50000-breached">breach analysis research</a> 
+                            has been viewed by over 355,000 people. We don't sell your data. We 
+                            don't run a password manager that locks you in. We just build tools 
+                            that help people stay safe online.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Specific Tools for Specific Needs -->
+            <section class="tools-grid" style="margin: 60px 0; text-align: center;">
+                <h3 style="font-size: 1.75rem; font-weight: 600; color: var(--text-dark); margin-bottom: 30px;">What are you securing today?</h3>
+                <div class="grid-container" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;">
+                    <a href="/wifi-password-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">📶</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">WiFi / Router</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Generate WPA2 keys</p>
+                        </div>
+                    </a>
+                    <a href="/memorable-password-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">🧠</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">Memorable</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Generate passphrases</p>
+                        </div>
+                    </a>
+                    <a href="/pin-code-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔢</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">PIN Code</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Generate secure PINs</p>
+                        </div>
+                    </a>
+                    <a href="/16-character-password-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔐</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">16 Characters</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Maximum security</p>
+                        </div>
+                    </a>
+                    <a href="/wifi-qr-code-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">📱</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">WiFi QR Code</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Scan to connect</p>
+                        </div>
+                    </a>
+                    <a href="/security-question-generator" style="text-decoration: none; color: inherit;">
+                        <div class="tool-card" style="width: 200px;">
+                            <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔒</span>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">Security Questions</h4>
+                            <p style="font-size: 14px; color: var(--text-gray); margin: 0;">Generate fake answers</p>
+                        </div>
+                    </a>
                 </div>
             </section>
 
             <!-- Privacy Section -->
             <section class="privacy-section">
+                <div class="feature-icon" style="margin: 0 auto 18px;">🔏</div>
                 <h2>Your Privacy is Protected</h2>
-                <p>This password generator runs entirely in your browser. No data is collected, stored, or transmitted. Your passwords are generated locally using your device's cryptographic functions.</p>
+                <p>We don't collect, store, or transmit any data. Your passwords are generated locally in your browser using industry-standard cryptographic functions. No tracking, no analytics, no data collection.</p>
             </section>
 
-            <!-- Stats Section -->
-            <section class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-number">50,000+</div>
-                    <div class="stat-label">Developers Trust Us</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Client-Side Security</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Data Collected</div>
+            <!-- Newsletter Section -->
+            <section class="newsletter-section">
+                <div class="newsletter-card">
+                    <h2>📩 Want Simple Security Tips Like This?</h2>
+                    <p>Join thousands of readers who get one jargon-free security tip per month. No spam. No tech-speak. Just practical advice you can actually use.</p>
                 </div>
             </section>
+
         </div>
     </main>
 
-    <footer>
+    <footer class="site-footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Generator</h3>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>SafePasswordGenerator</h3>
+                    <div class="footer-mission">
+                        <strong>OUR MISSION</strong>
+                        <p>
+                            To make online security accessible to everyone. We believe you shouldn't need a 
+                            CS degree to stay safe. That's why our tools are 100% client-side, 
+                            open-source, and free forever.
+                        </p>
+                        <p class="tech-note">Built with Web Crypto API</p>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Tools</h4>
                     <ul>
                         <li><a href="/">Password Generator</a></li>
-                        <li><a href="/help">How It Works</a></li>
+                        <li><a href="/password-game">Password Game</a></li>
+                        <li><a href="/security-score">Security Score</a></li>
                         <li><a href="/blog">Security Blog</a></li>
                     </ul>
+                    <p style="margin-top: 12px; font-size: 0.95rem; color: var(--text-gray);">
+                        Looking for enterprise compliance? 
+                        <a href="/blog/business-password-policy-2025" style="text-decoration: underline; color: #2563eb; font-weight: 500;">
+                            Read the 2025 Business Password Policy Guide
+                        </a>
+                    </p>
                 </div>
-                <div class="footer-section">
-                    <h3>Resources</h3>
+                <div class="footer-col">
+                    <h4>Support</h4>
                     <ul>
-                        <li><a href="/blog">Security Blog</a></li>
-                        <li><a href="/press">Press Coverage</a></li>
                         <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/help">Help</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h3>Legal</h3>
+                <div class="footer-col">
+                    <h4>Password Lengths</h4>
                     <ul>
-                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/15-character-password-generator">15 Characters</a></li>
+                        <li><a href="/16-character-password-generator">16 Characters</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Specialized Tools</h4>
+                    <ul>
+                        <li><a href="/wifi-password-generator">WiFi Password Generator</a></li>
+                        <li><a href="/wifi-qr-code-generator">WiFi QR Code Generator</a></li>
+                        <li><a href="/memorable-password-generator">Memorable Password Generator</a></li>
+                        <li><a href="/pin-code-generator">PIN Code Generator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
                         <li><a href="/terms">Terms of Service</a></li>
-                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="https://github.com/SafePassGenerator/safepasswordgen" target="_blank" rel="noopener">View Source Code</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 SafePasswordGenerator.net. All rights reserved.</p>
+            <div class="footer-legal-row">
+                <p class="affiliate-disclosure">
+                    <strong>Disclosure:</strong> SafePasswordGenerator is reader-supported. When you buy through links on our site, we may earn an affiliate commission. 
+                    This comes at no extra cost to you and helps keep our tools free.
+                </p>
+                <p class="copyright">&copy; <script>document.write(new Date().getFullYear())</script> SafePasswordGenerator.net. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script src="generator.js"></script>
+    <script>
+        // Password Generator Logic
+        const lengthSlider = document.getElementById('length-slider');
+        const lengthDisplay = document.getElementById('length-value');
+        const generatedPassword = document.getElementById('generated-password');
+        const generateBtn = document.getElementById('generate-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const toastBanner = document.getElementById('toast-banner');
+        const toastText = document.getElementById('toast-text');
+
+        // Character sets
+        const charSets = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+
+        /**
+         * Calculates the time to crack a randomly generated password.
+         * @param {string} password - The password string to analyze.
+         * @returns {object} - Contains the time string (e.g., "400 years") and a color code.
+         */
+        function calculatePasswordStrength(password) {
+            if (!password) return { text: "0 seconds", color: "#ef4444", score: 0 };
+
+            // 1. Determine the Pool Size (R)
+            // We check which character sets are actually present in the generated string
+            let poolSize = 0;
+            if (/[a-z]/.test(password)) poolSize += 26; // Lowercase
+            if (/[A-Z]/.test(password)) poolSize += 26; // Uppercase
+            if (/[0-9]/.test(password)) poolSize += 10; // Numbers
+            if (/[^a-zA-Z0-9]/.test(password)) poolSize += 32; // Symbols (approx)
+
+            // 2. Calculate Entropy (E = Length * log2(PoolSize))
+            const length = password.length;
+            const entropy = length * Math.log2(poolSize);
+
+            // 3. Estimate Crack Time (Seconds)
+            // Assumption: A powerful GPU rig can try 100 Billion (10^11) guesses per second.
+            // This is a conservative "safe" estimate for 2025 hardware.
+            const guessesPerSecond = 100000000000; 
+            const secondsToCrack = Math.pow(2, entropy) / guessesPerSecond;
+
+            // 4. Humanize the Output & Assign Color
+            let result = { text: "", color: "", score: 0 };
+            
+            if (secondsToCrack < 1) {
+                result.text = "Instantly";
+                result.color = "#ef4444"; // Red
+                result.score = 1;
+            } else if (secondsToCrack < 60) {
+                result.text = Math.round(secondsToCrack) + " seconds";
+                result.color = "#f97316"; // Orange
+                result.score = 2;
+            } else if (secondsToCrack < 3600) {
+                result.text = Math.round(secondsToCrack / 60) + " minutes";
+                result.color = "#eab308"; // Yellow
+                result.score = 3;
+            } else if (secondsToCrack < 86400) {
+                result.text = Math.round(secondsToCrack / 3600) + " hours";
+                result.color = "#eab308"; // Yellow
+                result.score = 3;
+            } else if (secondsToCrack < 31536000) {
+                result.text = Math.round(secondsToCrack / 86400) + " days";
+                result.color = "#22c55e"; // Green
+                result.score = 4;
+            } else if (secondsToCrack < 3153600000) { // Less than 100 years
+                result.text = Math.round(secondsToCrack / 31536000) + " years";
+                result.color = "#16a34a"; // Darker Green
+                result.score = 5;
+            } else {
+                // Use scientific notation for massive numbers or just "Centuries"
+                result.text = "Centuries"; 
+                result.color = "#15803d"; // Deep Green
+                result.score = 6;
+            }
+
+            return result;
+        }
+
+        function displayPasswordWithColors(password) {
+            // Clear previous content
+            generatedPassword.innerHTML = '';
+            
+            // Color code each character
+            for (let i = 0; i < password.length; i++) {
+                const char = password[i];
+                const span = document.createElement('span');
+                span.textContent = char;
+                
+                // Color coding: numbers = blue, symbols = pink/magenta, letters = default
+                if (/[0-9]/.test(char)) {
+                    span.style.color = '#2563eb'; // Blue for numbers
+                    span.style.fontWeight = '700';
+                } else if (/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(char)) {
+                    span.style.color = '#db2777'; // Pink/magenta for symbols
+                    span.style.fontWeight = '700';
+                } else {
+                    span.style.color = 'inherit'; // Default for letters
+                }
+                
+                generatedPassword.appendChild(span);
+            }
+        }
+
+        function updateStrengthMeter(password) {
+            const timeToCrackElement = document.getElementById('time-to-crack');
+            const timeToCrackContainer = document.getElementById('time-to-crack-container');
+            const strengthMeterBar = document.getElementById('strength-meter-bar');
+            
+            if (!password || password.startsWith('Select') || password.startsWith('Use a password')) {
+                if (timeToCrackElement) timeToCrackElement.textContent = '';
+                if (timeToCrackContainer) {
+                    timeToCrackContainer.style.background = 'var(--bg-light, #f1f5f9)';
+                }
+                if (strengthMeterBar) {
+                    strengthMeterBar.classList.remove('weak', 'medium', 'strong');
+                    strengthMeterBar.style.background = '';
+                }
+                generatedPassword.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+                return;
+            }
+            
+            const data = calculatePasswordStrength(password);
+            
+            // Update text and color
+            if (timeToCrackElement) {
+                timeToCrackElement.textContent = data.text;
+                timeToCrackElement.style.color = data.color;
+            }
+            
+            // Update container background with subtle color-coded glow
+            if (timeToCrackContainer) {
+                if (data.score <= 2) {
+                    timeToCrackContainer.style.background = 'rgba(239, 68, 68, 0.1)';
+                } else if (data.score <= 4) {
+                    timeToCrackContainer.style.background = 'rgba(249, 115, 22, 0.1)';
+                } else {
+                    timeToCrackContainer.style.background = 'rgba(34, 197, 94, 0.1)';
+                }
+            }
+            
+            // Update background color based on strength
+            generatedPassword.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            
+            let strengthClass = '';
+            if (data.score <= 2) {
+                generatedPassword.classList.add('strength-weak');
+                strengthClass = 'weak';
+            } else if (data.score <= 4) {
+                generatedPassword.classList.add('strength-medium');
+                strengthClass = 'medium';
+            } else {
+                generatedPassword.classList.add('strength-strong');
+                strengthClass = 'strong';
+            }
+            
+            // Update strength meter bar
+            if (strengthMeterBar) {
+                strengthMeterBar.classList.remove('weak', 'medium', 'strong');
+                strengthMeterBar.classList.add(strengthClass);
+                strengthMeterBar.style.background = data.color;
+            }
+        }
+
+        // Update length display
+        lengthSlider.addEventListener('input', function() {
+            lengthDisplay.textContent = this.value;
+            // Regenerate password when slider changes to update strength meter
+            generatePassword();
+        });
+
+        // Generate password
+        window.generatePassword = function generatePassword() {
+            const length = parseInt(lengthSlider.value, 10);
+            const selectedSets = [];
+
+            const uppercaseInput = document.getElementById('uppercase');
+            const lowercaseInput = document.getElementById('lowercase');
+            const numbersInput = document.getElementById('numbers');
+            const symbolsInput = document.getElementById('symbols');
+            const excludeAmbiguousInput = document.getElementById('avoid-ambiguous');
+
+            const includeUppercase = uppercaseInput ? uppercaseInput.classList.contains('active') : false;
+            const includeLowercase = lowercaseInput ? lowercaseInput.classList.contains('active') : false;
+            const includeNumbers = numbersInput ? numbersInput.classList.contains('active') : false;
+            const includeSymbols = symbolsInput ? symbolsInput.classList.contains('active') : false;
+            const excludeAmbiguous = excludeAmbiguousInput ? excludeAmbiguousInput.checked : false;
+
+            // Build character sets, excluding ambiguous characters if requested
+            let uppercaseChars = charSets.uppercase;
+            let lowercaseChars = charSets.lowercase;
+            let numbersChars = charSets.numbers;
+            
+            if (excludeAmbiguous) {
+                // Remove ambiguous characters: O, 0, l, I, 1
+                uppercaseChars = uppercaseChars.replace(/[OI]/g, '');
+                lowercaseChars = lowercaseChars.replace(/[l]/g, '');
+                numbersChars = numbersChars.replace(/[01]/g, '');
+            }
+            
+            if (includeUppercase) selectedSets.push(uppercaseChars);
+            if (includeLowercase) selectedSets.push(lowercaseChars);
+            if (includeNumbers) selectedSets.push(numbersChars);
+            if (includeSymbols) selectedSets.push(charSets.symbols);
+
+            if (selectedSets.length === 0) {
+                generatedPassword.textContent = 'Select at least one character set.';
+                generatedPassword.classList.add('error-state');
+                showToast('Select at least one character set.', 'warning');
+                return;
+            }
+            generatedPassword.classList.remove('error-state');
+
+            if (length < 12) {
+                generatedPassword.textContent = 'Use a password length of at least 12 characters.';
+                generatedPassword.classList.add('error-state');
+                showToast('Use at least 12 characters for better security.', 'warning');
+                return;
+            }
+            generatedPassword.classList.remove('error-state');
+
+            const allChars = selectedSets.join('');
+            const passwordArray = new Uint8Array(length);
+            crypto.getRandomValues(passwordArray);
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += allChars[passwordArray[i] % allChars.length];
+            }
+
+            // Display password with color coding
+            displayPasswordWithColors(password);
+            
+            // Hide post-copy CTA when generating new password
+            const postCopyCta = document.getElementById('post-copy-cta');
+            if (postCopyCta) {
+                postCopyCta.classList.add('hidden');
+            }
+            
+            // Update strength meter (new implementation)
+            if (window.strengthMeter) {
+                window.strengthMeter.update(password);
+            }
+            
+            // Show tap-to-copy hint on mobile when password is generated
+            const tapHint = document.getElementById('tap-to-copy-hint');
+            if (tapHint && /Mobile|Android|iPhone/i.test(navigator.userAgent)) {
+                tapHint.style.display = 'block';
+            }
+
+            // Track password generation
+            if (window.SPGTracking && window.SPGTracking.trackPasswordGenerated) {
+                window.SPGTracking.trackPasswordGenerated({
+                    length: length,
+                    uppercase: includeUppercase,
+                    lowercase: includeLowercase,
+                    numbers: includeNumbers,
+                    symbols: includeSymbols,
+                    type: 'random',
+                    generator: 'main'
+                });
+            }
+        }
+
+        function copyToClipboard(method = 'button') {
+            const password = generatedPassword.textContent;
+            if (!password || password.startsWith('Select') || password.startsWith('Use a password')) return;
+
+            navigator.clipboard.writeText(password).then(() => {
+                // Show non-blocking toast notification
+                showCopySuccessToast();
+                
+                // Show post-copy affiliate CTA
+                const postCopyCta = document.getElementById('post-copy-cta');
+                if (postCopyCta) {
+                    postCopyCta.classList.remove('hidden');
+                    // Scroll it into view smoothly
+                    postCopyCta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                
+                // Track password copy
+                if (window.SPGTracking && window.SPGTracking.trackPasswordCopied) {
+                    const length = password.length;
+                    window.SPGTracking.trackPasswordCopied({
+                        length: length,
+                        type: 'random',
+                        generator: 'main',
+                        method: method
+                    });
+                }
+                
+                // Visual feedback on copy buttons (both icon and large button)
+                const copyBtn = document.getElementById('copy-btn');
+                const copyBtnLarge = document.getElementById('copy-btn-large');
+                
+                if (copyBtn) {
+                    copyBtn.classList.add('copied');
+                    const iconCopy = copyBtn.querySelector('.icon-copy');
+                    if (iconCopy) {
+                        iconCopy.textContent = '✓';
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            iconCopy.textContent = '📋';
+                        }, 2000);
+                    }
+                }
+                
+                if (copyBtnLarge) {
+                    const originalText = copyBtnLarge.innerHTML;
+                    copyBtnLarge.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Copied!';
+                    copyBtnLarge.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtnLarge.innerHTML = originalText;
+                        copyBtnLarge.classList.remove('copied');
+                    }, 2000);
+                }
+                
+                // Haptic feedback on mobile (vibration)
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50); // 50ms vibration for tactile feedback
+                }
+            }).catch(() => {
+                showToast('Unable to copy. Please try again.', 'error');
+            });
+        }
+        
+        function showCopySuccessToast() {
+            const toast = document.getElementById('toast-banner');
+            const toastText = document.getElementById('toast-text');
+            if (!toast || !toastText) return;
+            
+            // Set content with optional affiliate link
+            toastText.innerHTML = 'Password copied to clipboard! <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005" target="_blank" rel="sponsored noopener" class="toast-link">Store it securely with NordPass</a>';
+            toast.classList.add('copy-success', 'visible');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => {
+                    toast.classList.remove('copy-success');
+                    toastText.innerHTML = 'Action completed.';
+                }, 300);
+            }, 3000);
+        }
+
+        function clearPassword() {
+            generatedPassword.textContent = '';
+            generatedPassword.classList.remove('error-state');
+        }
+        
+        function showCopySuccessToast() {
+            const toast = document.getElementById('toast-banner');
+            const toastText = document.getElementById('toast-text');
+            if (!toast || !toastText) return;
+            
+            // Set content with optional affiliate link
+            toastText.innerHTML = 'Password copied to clipboard! <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=134005" target="_blank" rel="sponsored noopener" class="toast-link">Store it securely with NordPass</a>';
+            toast.classList.add('copy-success', 'visible');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => {
+                    toast.classList.remove('copy-success');
+                    toastText.innerHTML = 'Action completed.';
+                }, 300);
+            }, 3000);
+        }
+
+        // Update time to crack when character sets change
+        function updateTimeToCrackOnChange() {
+            const length = parseInt(lengthSlider.value, 10);
+            const selectedSets = [];
+            const uppercaseInput = document.getElementById('uppercase');
+            const lowercaseInput = document.getElementById('lowercase');
+            const numbersInput = document.getElementById('numbers');
+            const symbolsInput = document.getElementById('symbols');
+            const excludeAmbiguousInput = document.getElementById('avoid-ambiguous');
+            const excludeAmbiguous = excludeAmbiguousInput ? excludeAmbiguousInput.checked : false;
+            
+            let uppercaseChars = charSets.uppercase;
+            let lowercaseChars = charSets.lowercase;
+            let numbersChars = charSets.numbers;
+            
+            if (excludeAmbiguous) {
+                uppercaseChars = uppercaseChars.replace(/[OI]/g, '');
+                lowercaseChars = lowercaseChars.replace(/[l]/g, '');
+                numbersChars = numbersChars.replace(/[01]/g, '');
+            }
+            
+            if (uppercaseInput && uppercaseInput.checked) selectedSets.push(uppercaseChars);
+            if (lowercaseInput && lowercaseInput.checked) selectedSets.push(lowercaseChars);
+            if (numbersInput && numbersInput.checked) selectedSets.push(numbersChars);
+            if (symbolsInput && symbolsInput.checked) selectedSets.push(charSets.symbols);
+            
+            // Regenerate password when character sets change to update strength meter
+            generatePassword();
+        }
+
+        // Add listeners to character set checkboxes and ambiguity toggle
+        const uppercaseInput = document.getElementById('uppercase');
+        const lowercaseInput = document.getElementById('lowercase');
+        const numbersInput = document.getElementById('numbers');
+        const symbolsInput = document.getElementById('symbols');
+        const excludeAmbiguousInput = document.getElementById('avoid-ambiguous');
+        
+        // Add click handlers for charset buttons (toggle active class)
+        if (uppercaseInput) {
+            uppercaseInput.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updateTimeToCrackOnChange();
+                generatePassword();
+            });
+        }
+        if (lowercaseInput) {
+            lowercaseInput.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updateTimeToCrackOnChange();
+                generatePassword();
+            });
+        }
+        if (numbersInput) {
+            numbersInput.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updateTimeToCrackOnChange();
+                generatePassword();
+            });
+        }
+        if (symbolsInput) {
+            symbolsInput.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updateTimeToCrackOnChange();
+                generatePassword();
+            });
+        }
+        if (excludeAmbiguousInput) excludeAmbiguousInput.addEventListener('change', function() {
+            // Regenerate password when ambiguity toggle changes
+            generatePassword();
+        });
+
+        // Event listeners - Optimized for INP
+        // Use passive listeners where possible and optimize click handlers
+        generateBtn.addEventListener('click', generatePassword, { passive: false });
+        
+        // Large buttons below password box
+        const generateBtnLarge = document.getElementById('generate-btn-large');
+        const copyBtnLarge = document.getElementById('copy-btn-large');
+        
+        if (generateBtnLarge) {
+            generateBtnLarge.addEventListener('click', generatePassword, { passive: false });
+        }
+        
+        if (copyBtnLarge) {
+            copyBtnLarge.addEventListener('click', () => copyToClipboard('button-large'), { passive: false });
+        }
+        
+        // Generate password on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Small delay to ensure all scripts are loaded
+                setTimeout(generatePassword, 100);
+            });
+        } else {
+            // DOM already loaded, generate immediately
+            setTimeout(generatePassword, 100);
+        }
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => copyToClipboard('button'), { passive: false });
+        }
+        if (clearBtn) {
+            clearBtn.addEventListener('click', clearPassword, { passive: false });
+        }
+        
+        // Fix 1: Tap password field to copy (mobile-friendly)
+        generatedPassword.addEventListener('click', function() {
+            const password = this.textContent;
+            if (password && !password.startsWith('Select') && !password.startsWith('Use a password')) {
+                copyToClipboard('tap-field');
+            }
+        }, { passive: true });
+        
+        // Also support touch events for better mobile support
+        generatedPassword.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            const password = this.textContent;
+            if (password && !password.startsWith('Select') && !password.startsWith('Use a password')) {
+                copyToClipboard('tap-field');
+            }
+        }, { passive: false });
+
+        // Theme toggle - ensure DOM is ready
+        function initThemeToggle() {
+            // Set default theme to light if not in localStorage
+            const savedTheme = localStorage.getItem('theme');
+            const currentTheme = savedTheme || 'light';
+            
+            // Always set the theme attribute on documentElement
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // If no saved theme, ensure localStorage is set to light
+            if (!savedTheme) {
+                localStorage.setItem('theme', 'light');
+            }
+            
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                const themeIcon = themeToggle.querySelector('.theme-icon') || themeToggle;
+                
+                // Update icon based on current theme
+                if (themeIcon) {
+                    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+                }
+                
+                const handleThemeToggle = function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    
+                    // Update all theme icons
+                    const allThemeIcons = document.querySelectorAll('.theme-icon');
+                    allThemeIcons.forEach(icon => {
+                        icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    });
+                    
+                    // Also update mobile toggle if it exists
+                    const mobileToggle = document.getElementById('theme-toggle-mobile');
+                    if (mobileToggle) {
+                        const mobileIcon = mobileToggle.querySelector('.theme-icon');
+                        if (mobileIcon) {
+                            mobileIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                        }
+                    }
+                };
+                
+                // Remove existing listeners to prevent duplicates
+                const newToggle = themeToggle.cloneNode(true);
+                themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+                
+                // Add event listeners to the new element
+                newToggle.addEventListener('click', handleThemeToggle, { passive: false });
+                newToggle.addEventListener('touchend', handleThemeToggle, { passive: false });
+            }
+        }
+        
+        // Initialize theme immediately (before DOMContentLoaded) to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const theme = savedTheme || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            if (!savedTheme) {
+                localStorage.setItem('theme', 'light');
+            }
+        })();
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+
+        const navContainer = document.querySelector('.nav-container');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        if (mobileMenuToggle && navLinks) {
+            const closeMobileMenu = () => {
+                navLinks.classList.remove('active');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            };
+
+            // Optimize mobile menu toggle for INP - use requestAnimationFrame for smooth interaction
+            // Handle both click and touch events for better mobile support
+            const handleMenuToggle = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                requestAnimationFrame(() => {
+                    const isOpen = navLinks.classList.toggle('active');
+                    mobileMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            };
+            
+            mobileMenuToggle.addEventListener('click', handleMenuToggle, { passive: false });
+            mobileMenuToggle.addEventListener('touchend', handleMenuToggle, { passive: false });
+
+            navLinks.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => closeMobileMenu());
+            });
+
+            // Optimize document click handler for INP
+            document.addEventListener('click', (event) => {
+                if (navLinks.classList.contains('active') && navContainer && !navContainer.contains(event.target)) {
+                    requestAnimationFrame(closeMobileMenu);
+                }
+            }, { passive: true });
+
+            // Optimize resize handler - debounce for better INP
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (window.innerWidth > 768) {
+                        closeMobileMenu();
+                    }
+                }, 150);
+            }, { passive: true });
+        }
+
+        // Newsletter subscription functionality
+        const newsletterForm = document.getElementById('newsletter-form');
+        const newsletterEmail = document.getElementById('newsletter-email');
+        const newsletterSubmit = document.getElementById('newsletter-submit');
+        const newsletterMessage = document.getElementById('newsletter-message');
+
+        // Email validation function
+        function validateEmail(email) {
+            if (!email || typeof email !== 'string') return false;
+            
+            // Length check (RFC 5321: max 254 characters for email address)
+            if (email.length > 254) return false;
+            
+            // Basic sanitization - remove any control characters
+            email = email.replace(/[\x00-\x1F\x7F]/g, '');
+            
+            // RFC 5322 compliant email regex (simplified but effective)
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            
+            return emailRegex.test(email);
+        }
+
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = newsletterEmail.value.trim();
+                
+                // Validate email
+                if (!email) {
+                    newsletterMessage.innerHTML = '<strong>❌ Please enter an email address.</strong>';
+                    newsletterMessage.className = 'error';
+                    newsletterMessage.style.display = 'flex';
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    newsletterMessage.innerHTML = '<strong>❌ Please enter a valid email address.</strong>';
+                    newsletterMessage.className = 'error';
+                    newsletterMessage.style.display = 'flex';
+                    return;
+                }
+
+                // Show loading state
+                newsletterSubmit.textContent = 'Subscribing...';
+                newsletterSubmit.disabled = true;
+                newsletterMessage.style.display = 'none';
+                newsletterMessage.className = '';
+
+                try {
+                    // Sanitize email before sending (additional safety)
+                    const sanitizedEmail = email.replace(/[\x00-\x1F\x7F]/g, '').substring(0, 254);
+                    
+                    // API Gateway endpoint for newsletter subscription
+                    const API_ENDPOINT = 'https://6icf17lelg.execute-api.us-east-1.amazonaws.com/subscribe';
+                    
+                    const response = await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: sanitizedEmail,
+                            source: 'homepage'
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && (result.success || result.message)) {
+                        newsletterMessage.innerHTML = '<strong>✅ Successfully subscribed! Thanks for joining us. Check your email for confirmation.</strong>';
+                        newsletterMessage.className = 'success';
+                        newsletterEmail.value = '';
+                        // Scroll message into view
+                        newsletterMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        newsletterMessage.innerHTML = `<strong>❌ ${result.error || result.message || 'Subscription failed. Please try again.'}</strong>`;
+                        newsletterMessage.className = 'error';
+                    }
+                } catch (error) {
+                    console.error('Newsletter subscription error:', error);
+                    newsletterMessage.innerHTML = '<strong>❌ Network error. Please check your connection and try again.</strong>';
+                    newsletterMessage.className = 'error';
+                } finally {
+                    newsletterSubmit.textContent = 'Subscribe';
+                    newsletterSubmit.disabled = false;
+                    newsletterMessage.style.display = 'flex';
+                }
+            });
+        }
+        const baseThemeToggle = document.getElementById('theme-toggle');
+
+        if (navContainer && baseThemeToggle && !document.querySelector('.mobile-theme-toggle')) {
+            const clonedThemeToggle = baseThemeToggle.cloneNode(true);
+            clonedThemeToggle.id = 'theme-toggle-mobile';
+            clonedThemeToggle.classList.add('mobile-theme-toggle');
+
+            const mobileMenuToggle = navContainer.querySelector('.mobile-menu-toggle');
+            if (mobileMenuToggle && mobileMenuToggle.nextElementSibling !== clonedThemeToggle) {
+                mobileMenuToggle.insertAdjacentElement('afterend', clonedThemeToggle);
+            } else {
+                const navLinks = navContainer.querySelector('.nav-links');
+                if (navLinks) {
+                    navContainer.insertBefore(clonedThemeToggle, navLinks);
+                } else {
+                    navContainer.appendChild(clonedThemeToggle);
+                }
+            }
+
+            navContainer.classList.add('has-mobile-theme-toggle');
+
+            const syncThemeToggleIcons = () => {
+                const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const originalIcon = baseThemeToggle.querySelector('.theme-icon');
+                const clonedIcon = clonedThemeToggle.querySelector('.theme-icon');
+
+                if (originalIcon) {
+                    originalIcon.textContent = activeTheme === 'dark' ? '☀️' : '🌙';
+                }
+                if (clonedIcon) {
+                    clonedIcon.textContent = activeTheme === 'dark' ? '☀️' : '🌙';
+                }
+            };
+
+            const handleClonedThemeToggle = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                // Trigger the base toggle's click handler
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                syncThemeToggleIcons();
+            };
+            
+            // Sync icons when base toggle is clicked
+            baseThemeToggle.addEventListener('click', syncThemeToggleIcons);
+            clonedThemeToggle.addEventListener('click', handleClonedThemeToggle, { passive: false });
+            clonedThemeToggle.addEventListener('touchend', handleClonedThemeToggle, { passive: false });
+            
+            // Initial sync
+            syncThemeToggleIcons();
+
+            syncThemeToggleIcons();
+        }
+
+        function showToast(message, variant = 'success') {
+            if (!toastBanner || !toastText) return;
+            toastText.textContent = message;
+            toastBanner.dataset.variant = variant;
+            toastBanner.classList.add('visible');
+            clearTimeout(showToast.timeoutId);
+            showToast.timeoutId = setTimeout(() => {
+                toastBanner.classList.remove('visible');
+            }, 2600);
+        }
+</script>
+
+    <!-- Newsletter Slide-up -->
+    <div id="newsletter-slide-up" class="slide-up" hidden>
+        <div class="slide-up-content">
+            <button class="slide-up-close">&times;</button>
+            <div class="slide-up-text">
+                <h3 class="slide-up-title">Get weekly security tips</h3>
+                <p class="slide-up-description">No spam. Just practical advice to keep your accounts safe.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Refresh JavaScript -->
+    <script src="/js/ui-refresh.js"></script>
+    
+    <!-- Strength Meter Scripts -->
+    <script src="/js/strength-meter.js"></script>
+    <script src="/js/strength-meter-ui.js"></script>
+    
+    <script>
+        // Initialize strength meter
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize strength meter
+            window.strengthMeter = new StrengthMeterUI('strengthMeterContainer');
+            
+            // Track clicks on post-copy CTA affiliate links
+            document.querySelectorAll('.post-copy-cta .manager-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    const manager = this.querySelector('.manager-name').textContent;
+                    // affiliate click - tracking removed
+                });
+            });
+        });
+    </script>
 </body>
 </html>
